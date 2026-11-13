@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula Interactiva - Flipped Classroom</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800 bg-slate-50">
+
+    <!-- Header / Barra Superior -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900">Aula <span class="text-blue-600">Interactiva</span></h1>
+                    <p class="text-xs text-slate-500 font-medium">Metodología Flipped Classroom</p>
+                </div>
+            </div>
+
+            <!-- Estado de Sesión Activa -->
+            <div id="user-nav-section" class="hidden items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <div id="nav-user-name" class="text-sm font-semibold text-slate-800">Usuario</div>
+                    <div id="nav-user-role" class="text-xs text-slate-500 font-medium">Rol</div>
+                </div>
+                <button onclick="logout()" class="px-3.5 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-700 text-sm font-semibold rounded-xl transition flex items-center gap-2 border border-slate-200 hover:border-rose-200">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ==================== VISTA 1: INICIO DE SESIÓN (LOGIN) ==================== -->
+        <section id="view-login" class="max-w-md mx-auto my-8 sm:my-16">
+            <div class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                        <i data-lucide="lock" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-900">Iniciar Sesión</h2>
+                    <p class="text-xs text-slate-500 mt-1.5">Ingresa tus credenciales asignadas para acceder a tu aula</p>
+                </div>
+
+                <form onsubmit="handleLoginSubmit(event)" class="space-y-5">
+                    <div>
+                        <label for="login-username" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Usuario</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </span>
+                            <input type="text" id="login-username" placeholder="Ingresa tu usuario" required autocomplete="username" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="login-password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Contraseña</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                <i data-lucide="key-round" class="w-4 h-4"></i>
+                            </span>
+                            <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" class="w-full pl-10 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                            <button type="button" onclick="togglePasswordVisibility()" aria-label="Mostrar u ocultar contraseña" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition">
+                                <i id="password-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="login-error-msg" class="hidden text-xs text-rose-600 bg-rose-50 p-3.5 rounded-xl border border-rose-200 font-medium flex items-center gap-2">
+                        <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                        <span>Usuario o contraseña incorrectos. Verifica tus datos e intenta nuevamente.</span>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                        <span>Ingresar al Aula</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- ==================== VISTA 2: PANEL DOCENTE ==================== -->
+        <section id="view-docente" class="hidden space-y-8">
+            <!-- Encabezado y Estadísticas -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="lg:col-span-6">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 mb-2">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Administración Docente
+                    </span>
+                    <h2 class="text-2xl font-extrabold text-slate-900">Gestión de Clases Invertidas</h2>
+                    <p class="text-slate-500 text-sm mt-1">Adjunta tus videos resolviendo las páginas del libro y sube el PDF con los dos ejercicios de refuerzo.</p>
+                </div>
+                <div class="lg:col-span-6 grid grid-cols-3 gap-3">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                        <div class="text-xs font-semibold text-slate-500 uppercase">Total</div>
+                        <div id="teacher-stat-total" class="text-2xl font-extrabold text-slate-900 mt-1">0</div>
+                    </div>
+                    <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-100 text-center">
+                        <div class="text-xs font-semibold text-emerald-700 uppercase">2do EGB</div>
+                        <div id="teacher-stat-2do" class="text-2xl font-extrabold text-emerald-600 mt-1">0</div>
+                    </div>
+                    <div class="bg-purple-50/70 p-4 rounded-xl border border-purple-100 text-center">
+                        <div class="text-xs font-semibold text-purple-700 uppercase">9no EGB</div>
+                        <div id="teacher-stat-9no" class="text-2xl font-extrabold text-purple-600 mt-1">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Publicación de Nueva Clase -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex items-center gap-2.5">
+                    <i data-lucide="upload-cloud" class="w-5 h-5 text-blue-400"></i>
+                    <h3 class="font-bold text-base">Publicar Nueva Clase y Material de Refuerzo</h3>
+                </div>
+
+                <form id="form-upload-lesson" onsubmit="handleUploadSubmit(event)" class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="input-level" class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Nivel / Curso Destino *</label>
+                            <select id="input-level" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white">
+                                <option value="2do EGB">2do EGB</option>
+                                <option value="9no EGB">9no EGB</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="input-title" class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Título de la Clase / Tema *</label>
+                            <input type="text" id="input-title" placeholder="Ej: Resolución de ecuaciones de primer grado" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white">
+                        </div>
+
+                        <div>
+                            <label for="input-page" class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Página(s) del Libro *</label>
+                            <input type="text" id="input-page" placeholder="Ej: Pág. 42 - 43" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="input-desc" class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Descripción o Instrucciones Breves para el Estudiante</label>
+                        <textarea id="input-desc" rows="2" placeholder="Indica qué deben observar en el video y cómo presentar los dos ejercicios del PDF..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"></textarea>
+                    </div>
+
+                    <!-- Zonas de Adjuntar Archivos Locales -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Adjuntar Video -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">1. Adjuntar Video de la Clase (MP4 / WebM) *</label>
+                            <div id="dropzone-video" class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-5 text-center bg-slate-50 hover:bg-blue-50/40 transition cursor-pointer relative">
+                                <input type="file" id="input-video-file" accept="video/*" required onchange="updateVideoFileLabel(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <div class="w-11 h-11 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-2.5">
+                                    <i data-lucide="video" class="w-6 h-6"></i>
+                                </div>
+                                <p id="video-file-label" class="text-sm font-semibold text-slate-700">Seleccionar archivo de video</p>
+                                <p id="video-file-meta" class="text-xs text-slate-400 mt-1">Formatos locales (.mp4, .webm, .ogg)</p>
+                            </div>
+                        </div>
+
+                        <!-- Adjuntar PDF de Ejercicios -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">2. Adjuntar PDF de Ejercicios de Refuerzo *</label>
+                            <div id="dropzone-pdf" class="border-2 border-dashed border-slate-300 hover:border-rose-500 rounded-2xl p-5 text-center bg-slate-50 hover:bg-rose-50/40 transition cursor-pointer relative">
+                                <input type="file" id="input-pdf-file" accept="application/pdf" required onchange="updatePdfFileLabel(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-2.5">
+                                    <i data-lucide="file-text" class="w-6 h-6"></i>
+                                </div>
+                                <p id="pdf-file-label" class="text-sm font-semibold text-slate-700">Seleccionar archivo PDF (2 ejercicios)</p>
+                                <p id="pdf-file-meta" class="text-xs text-slate-400 mt-1">Documento PDF con los ejercicios matemáticos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" id="btn-publish-lesson" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                            <span>Publicar Clase y Material</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Listado de Clases Publicadas -->
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="folder-kanban" class="w-5 h-5 text-blue-600"></i>
+                        <span>Clases Publicadas</span>
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <button onclick="filterTeacherLessons('all')" id="tab-teacher-all" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-sm transition">
+                            Todos
+                        </button>
+                        <button onclick="filterTeacherLessons('2do EGB')" id="tab-teacher-2do" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition">
+                            2do EGB
+                        </button>
+                        <button onclick="filterTeacherLessons('9no EGB')" id="tab-teacher-9no" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition">
+                            9no EGB
+                        </button>
+                    </div>
+                </div>
+
+                <div id="teacher-lessons-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VISTA 3: ESTUDIANTE (2do EGB / 9no EGB) ==================== -->
+        <section id="view-estudiante" class="hidden space-y-8">
+            <!-- Encabezado Dinámico por Nivel -->
+            <div id="student-header-banner" class="p-6 sm:p-8 rounded-3xl border shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span id="student-level-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider">Nivel</span>
+                    <h2 id="student-welcome-title" class="text-2xl sm:text-3xl font-extrabold mt-2">Bienvenido a tu Aula Interactiva</h2>
+                    <p id="student-welcome-subtitle" class="text-sm mt-1 opacity-90">Mira el video explicativo de tu docente y descarga o visualiza la hoja PDF con los dos ejercicios de refuerzo.</p>
+                </div>
+                <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/80 backdrop-blur border border-white/60 shadow-sm text-xs font-bold text-slate-700 shrink-0">
+                    <i data-lucide="book-open-check" class="w-4 h-4 text-blue-600"></i>
+                    <span>Aula Invertida</span>
+                </div>
+            </div>
+
+            <!-- Listado Completo de Lecciones del Curso Asignado -->
+            <div id="student-lessons-list" class="space-y-8"></div>
+        </section>
+    </main>
+
+
+    <!-- ==================== MODAL VISTA PREVIA DOCENTE ==================== -->
+    <div id="modal-teacher-preview" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-5xl w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
+            <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span id="preview-level-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">Nivel</span>
+                    <div>
+                        <h3 id="preview-title" class="font-bold text-base sm:text-lg">Título de la lección</h3>
+                        <p id="preview-page" class="text-xs text-slate-400">Página del libro</p>
+                    </div>
+                </div>
+                <button onclick="closeTeacherPreview()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-h-[82vh] overflow-y-auto">
+                <!-- Video Preview -->
+                <div class="lg:col-span-6 space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <i data-lucide="play-circle" class="w-4 h-4 text-blue-600"></i> Video de la Clase
+                    </h4>
+                    <div class="aspect-video bg-black rounded-2xl overflow-hidden shadow-md">
+                        <video id="preview-video-player" controls class="w-full h-full object-contain"></video>
+                    </div>
+                    <p id="preview-desc" class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-xl border border-slate-200"></p>
+                </div>
+
+                <!-- PDF Preview -->
+                <div class="lg:col-span-6 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                            <i data-lucide="file-text" class="w-4 h-4 text-rose-600"></i> PDF de Ejercicios de Refuerzo
+                        </h4>
+                        <a id="preview-pdf-newtab" href="#" target="_blank" rel="noopener" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                            <span>Abrir en pestaña nueva</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                    <div class="h-80 sm:h-96 bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden">
+                        <iframe id="preview-pdf-frame" class="w-full h-full" title="Vista previa PDF"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== MODAL NOTIFICACIÓN / CONFIRMACIÓN ==================== -->
+    <div id="custom-alert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100">
+            <div id="alert-icon-container" class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="info" class="w-6 h-6"></i>
+            </div>
+            <h3 id="alert-title" class="text-lg font-bold text-slate-900">Notificación</h3>
+            <p id="alert-message" class="text-sm text-slate-600 mt-2">Mensaje informativo.</p>
+            <div id="alert-actions" class="mt-5 flex gap-2 justify-center">
+                <button onclick="closeCustomAlert()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded-xl transition">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Lógica de la Aplicación -->
+    <script>
+        let currentUserRole = null;
+        let currentFilterTeacher = 'all';
+        let lessons = [];
+        let db = null;
+
+        // Credenciales estrictas solicitadas
+        const VALID_USERS = {
+            'docente': { pass: 'profe2026', role: 'docente', name: 'Docente Titular', label: 'Administrador del Aula' },
+            'estudiante2do': { pass: '2doEGB2026', role: 'estudiante_2do', name: 'Estudiante 2do EGB', label: 'Nivel: 2do EGB' },
+            'estudiante9no': { pass: '9noEGB2026', role: 'estudiante_9no', name: 'Estudiante 9no EGB', label: 'Nivel: 9no EGB' }
+        };
+
+        /**
+         * Genera dinámicamente un archivo PDF real válido (Blob application/pdf)
+         * con 2 ejercicios matemáticos de muestra para las lecciones iniciales.
+         */
+        function generateSamplePdfBlob(courseTitle, pageRef, exercise1, exercise2) {
+            const sanitizePdfText = (txt) => txt
+                .replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ú/g, 'u')
+                .replace(/Á/g, 'A').replace(/É/g, 'E').replace(/Í/g, 'I').replace(/Ó/g, 'O').replace(/Ú/g, 'U')
+                .replace(/ñ/g, 'n').replace(/Ñ/g, 'N').replace(/¿/g, '').replace(/¡/g, '')
+                .replace(/[^\x20-\x7E]/g, '');
+
+            const lines = [
+                { text: 'AULA INTERACTIVA - FLIPPED CLASSROOM', size: 16, y: 740, bold: true },
+                { text: sanitizePdfText(courseTitle), size: 13, y: 712, bold: true },
+                { text: sanitizePdfText('Referencia del libro: ' + pageRef), size: 11, y: 690, bold: false },
+                { text: '--------------------------------------------------------------------------', size: 10, y: 672, bold: false },
+                { text: 'EJERCICIOS DE REFUERZO EN CASA (Resolver en el cuaderno)', size: 12, y: 645, bold: true },
+                { text: 'Ejercicio 1:', size: 12, y: 610, bold: true },
+                { text: sanitizePdfText(exercise1), size: 11, y: 590, bold: false },
+                { text: 'Ejercicio 2:', size: 12, y: 540, bold: true },
+                { text: sanitizePdfText(exercise2), size: 11, y: 520, bold: false },
+                { text: '--------------------------------------------------------------------------', size: 10, y: 470, bold: false },
+                { text: 'Nota: Revisa el video de la plataforma las veces que necesites antes de resolver.', size: 10, y: 450, bold: false }
+            ];
+
+            let streamContent = 'BT\n';
+            lines.forEach(l => {
+                const font = l.bold ? '/F2' : '/F1';
+                const escaped = l.text.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+                streamContent += `${font} ${l.size} Tf\n50 ${l.y} Td\n(${escaped}) Tj\n-50 -${l.y} Td\n`;
+            });
+            streamContent += 'ET';
+
+            const objects = [
+                '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n',
+                '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n',
+                '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>\nendobj\n',
+                `4 0 obj\n<< /Length ${streamContent.length} >>\nstream\n${streamContent}\nendstream\nendobj\n`,
+                '5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n',
+                '6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n'
+            ];
+
+            let pdf = '%PDF-1.4\n';
+            const offsets = [0];
+            objects.forEach(obj => {
+                offsets.push(pdf.length);
+                pdf += obj;
+            });
+
+            const xrefStart = pdf.length;
+            pdf += `xref\n0 ${objects.length + 1}\n`;
+            pdf += '0000000000 65535 f \n';
+            for (let i = 1; i < offsets.length; i++) {
+                pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+            }
+            pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+
+            return new Blob([pdf], { type: 'application/pdf' });
+        }
+
+        /**
+         * Genera un Blob de video demostrativo válido desde un Canvas HTML5
+         * para las lecciones iniciales precargadas.
+         */
+        function generateSampleVideoBlob(levelTitle, subtitleText) {
+            return new Promise((resolve) => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 640;
+                    canvas.height = 360;
+                    const ctx = canvas.getContext('2d');
+
+                    const drawFrame = (progress) => {
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                        ctx.fillStyle = '#2563eb';
+                        ctx.fillRect(0, 0, canvas.width, 56);
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 18px Inter, sans-serif';
+                        ctx.fillText('AULA INTERACTIVA - LECCION DE DEMOSTRACION', 24, 35);
+
+                        ctx.fillStyle = '#38bdf8';
+                        ctx.font = 'bold 24px Inter, sans-serif';
+                        ctx.fillText(levelTitle, 32, 145);
+
+                        ctx.fillStyle = '#e2e8f0';
+                        ctx.font = '16px Inter, sans-serif';
+                        ctx.fillText(subtitleText, 32, 185);
+
+                        ctx.fillStyle = '#94a3b8';
+                        ctx.font = '14px Inter, sans-serif';
+                        ctx.fillText('Video de muestra precargado. El docente puede adjuntar sus propios MP4.', 32, 235);
+
+                        // Barra animada sutil
+                        ctx.fillStyle = '#1e293b';
+                        ctx.fillRect(32, 285, 576, 10);
+                        ctx.fillStyle = '#3b82f6';
+                        ctx.fillRect(32, 285, 576 * progress, 10);
+                    };
+
+                    drawFrame(0.2);
+
+                    if (typeof MediaRecorder === 'undefined' || !canvas.captureStream) {
+                        resolve(null);
+                        return;
+                    }
+
+                    const stream = canvas.captureStream(10);
+                    const recorder = new MediaRecorder(stream);
+                    const chunks = [];
+
+                    recorder.ondataavailable = (e) => {
+                        if (e.data && e.data.size > 0) chunks.push(e.data);
+                    };
+
+                    recorder.onstop = () => {
+                        resolve(new Blob(chunks, { type: 'video/webm' }));
+                    };
+
+                    recorder.start();
+                    let step = 0;
+                    const interval = setInterval(() => {
+                        step++;
+                        drawFrame(Math.min(1, step / 10));
+                        if (step >= 10) {
+                            clearInterval(interval);
+                            recorder.stop();
+                        }
+                    }, 100);
+                } catch (err) {
+                    resolve(null);
+                }
+            });
+        }
+
+        async function buildSeedLessons() {
+            const video2do = await generateSampleVideoBlob(
+                '2do EGB: Restas llevando',
+                'Resolucion paso a paso - Pagina 28 del libro'
+            );
+            const pdf2do = generateSamplePdfBlob(
+                '2do EGB - Restas llevando (Resolucion Pag. 28)',
+                'Pagina 28 - Texto de Matematicas',
+                '1) Resuelve la resta llevando:   42 - 17 = _____   (Dibuja las decenas y unidades)',
+                '2) En una canasta habia 35 naranjas y se repartieron 18. Cuantas quedan? Respuesta: _____'
+            );
+
+            const video9no = await generateSampleVideoBlob(
+                '9no EGB: Factorizacion de trinomios',
+                'Resolucion paso a paso - Pagina 64 del libro'
+            );
+            const pdf9no = generateSamplePdfBlob(
+                '9no EGB - Factorizacion de trinomios (Resolucion Pag. 64)',
+                'Pagina 64 - Algebra y Funciones',
+                '1) Factoriza el trinomio de la forma x^2 + bx + c:   x^2 + 7x + 12 = (       )(       )',
+                '2) Factoriza completamente el siguiente polinomio:   2x^2 + 5x - 3 = (       )(       )'
+            );
+
+            return [
+                {
+                    id: 'seed-2do-1',
+                    title: 'Restas llevando - Resolución Pág. 28',
+                    level: '2do EGB',
+                    page: 'Pág. 28',
+                    description: 'Observa con atención cómo desagrupamos una decena para resolver las restas de la página 28 y luego completa los dos ejercicios del PDF adjunto.',
+                    date: new Date().toLocaleDateString('es-ES'),
+                    videoBlob: video2do,
+                    videoName: 'clase_2do_restas_pag28.webm',
+                    pdfBlob: pdf2do,
+                    pdfName: 'Ejercicios_Refuerzo_2doEGB_Pag28.pdf',
+                    isDemo: true
+                },
+                {
+                    id: 'seed-9no-1',
+                    title: 'Factorización de trinomios - Resolución Pág. 64',
+                    level: '9no EGB',
+                    page: 'Pág. 64',
+                    description: 'Revisa el procedimiento explicado en el video para descomponer trinomios cuadráticos y resuelve en tu cuaderno los dos ejercicios propuestos en el PDF.',
+                    date: new Date().toLocaleDateString('es-ES'),
+                    videoBlob: video9no,
+                    videoName: 'clase_9no_factorizacion_pag64.webm',
+                    pdfBlob: pdf9no,
+                    pdfName: 'Ejercicios_Refuerzo_9noEGB_Pag64.pdf',
+                    isDemo: true
+                }
+            ];
+        }
+
+        // Inicialización de IndexedDB ("AulaInteractivaDB")
+        function initDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('AulaInteractivaDB', 2);
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    if (!db.objectStoreNames.contains('lessons')) {
+                        db.createObjectStore('lessons', { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve();
+                };
+                request.onerror = (e) => reject(e);
+            });
+        }
+
+        function hydrateLessonUrls(lessonList) {
+            return lessonList.map(item => {
+                const hydrated = { ...item };
+                if (hydrated.videoBlob instanceof Blob) {
+                    hydrated.videoUrl = URL.createObjectURL(hydrated.videoBlob);
+                }
+                if (hydrated.pdfBlob instanceof Blob) {
+                    hydrated.pdfUrl = URL.createObjectURL(hydrated.pdfBlob);
+                }
+                return hydrated;
+            });
+        }
+
+        async function loadLessonsFromDB() {
+            if (!db) {
+                const seeds = await buildSeedLessons();
+                lessons = hydrateLessonUrls(seeds);
+                renderCurrentView();
+                return;
+            }
+
+            const transaction = db.transaction(['lessons'], 'readonly');
+            const store = transaction.objectStore('lessons');
+            const getAllReq = store.getAll();
+
+            getAllReq.onsuccess = async () => {
+                const stored = getAllReq.result || [];
+                if (stored.length > 0) {
+                    // Ordenar más recientes primero
+                    stored.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    lessons = hydrateLessonUrls(stored);
+                    renderCurrentView();
+                } else {
+                    const seeds = await buildSeedLessons();
+                    const writeTx = db.transaction(['lessons'], 'readwrite');
+                    const writeStore = writeTx.objectStore('lessons');
+                    seeds.forEach((s, idx) => {
+                        s.createdAt = Date.now() - idx;
+                        writeStore.put(s);
+                    });
+                    lessons = hydrateLessonUrls(seeds);
+                    renderCurrentView();
+                }
+            };
+
+            getAllReq.onerror = async () => {
+                const seeds = await buildSeedLessons();
+                lessons = hydrateLessonUrls(seeds);
+                renderCurrentView();
+            };
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initDatabase()
+                .then(() => loadLessonsFromDB())
+                .catch(async () => {
+                    const seeds = await buildSeedLessons();
+                    lessons = hydrateLessonUrls(seeds);
+                    renderCurrentView();
+                });
+        });
+
+        // ==================== AUTENTICACIÓN ====================
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('login-password');
+            const eyeIcon = document.getElementById('password-eye-icon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                eyeIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                pwdInput.type = 'password';
+                eyeIcon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value.trim();
+            const errorMsg = document.getElementById('login-error-msg');
+
+            errorMsg.classList.add('hidden');
+
+            const userData = VALID_USERS[username];
+            if (userData && userData.pass === password) {
+                currentUserRole = userData.role;
+
+                const navSection = document.getElementById('user-nav-section');
+                navSection.classList.remove('hidden');
+                navSection.classList.add('flex');
+                document.getElementById('nav-user-name').innerText = userData.name;
+                document.getElementById('nav-user-role').innerText = userData.label;
+
+                document.getElementById('login-username').value = '';
+                const pwdInput = document.getElementById('login-password');
+                pwdInput.value = '';
+                pwdInput.type = 'password';
+                document.getElementById('password-eye-icon').setAttribute('data-lucide', 'eye');
+
+                renderCurrentView();
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            currentUserRole = null;
+            // Pausar todos los videos activos al salir
+            document.querySelectorAll('video').forEach(v => v.pause());
+            const navSection = document.getElementById('user-nav-section');
+            navSection.classList.add('hidden');
+            navSection.classList.remove('flex');
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const loginView = document.getElementById('view-login');
+            const docenteView = document.getElementById('view-docente');
+            const estudianteView = document.getElementById('view-estudiante');
+
+            loginView.classList.add('hidden');
+            docenteView.classList.add('hidden');
+            estudianteView.classList.add('hidden');
+
+            if (currentUserRole === 'docente') {
+                docenteView.classList.remove('hidden');
+                renderTeacherDashboard();
+            } else if (currentUserRole === 'estudiante_2do' || currentUserRole === 'estudiante_9no') {
+                estudianteView.classList.remove('hidden');
+                renderStudentDashboard();
+            } else {
+                loginView.classList.remove('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        // ==================== LÓGICA DOCENTE ====================
+        function formatBytes(bytes) {
+            if (!bytes) return '0 MB';
+            const mb = bytes / (1024 * 1024);
+            return mb >= 1 ? `${mb.toFixed(2)} MB` : `${(bytes / 1024).toFixed(1)} KB`;
+        }
+
+        function updateVideoFileLabel(input) {
+            const label = document.getElementById('video-file-label');
+            const meta = document.getElementById('video-file-meta');
+            const zone = document.getElementById('dropzone-video');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                label.innerText = file.name;
+                meta.innerText = `Video seleccionado • ${formatBytes(file.size)}`;
+                zone.classList.add('border-blue-500', 'bg-blue-50/50');
+            } else {
+                label.innerText = 'Seleccionar archivo de video';
+                meta.innerText = 'Formatos locales (.mp4, .webm, .ogg)';
+                zone.classList.remove('border-blue-500', 'bg-blue-50/50');
+            }
+        }
+
+        function updatePdfFileLabel(input) {
+            const label = document.getElementById('pdf-file-label');
+            const meta = document.getElementById('pdf-file-meta');
+            const zone = document.getElementById('dropzone-pdf');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                label.innerText = file.name;
+                meta.innerText = `PDF seleccionado • ${formatBytes(file.size)}`;
+                zone.classList.add('border-rose-500', 'bg-rose-50/50');
+            } else {
+                label.innerText = 'Seleccionar archivo PDF (2 ejercicios)';
+                meta.innerText = 'Documento PDF con los ejercicios matemáticos';
+                zone.classList.remove('border-rose-500', 'bg-rose-50/50');
+            }
+        }
+
+        function handleUploadSubmit(e) {
+            e.preventDefault();
+            if (currentUserRole !== 'docente') return;
+
+            const level = document.getElementById('input-level').value;
+            const title = document.getElementById('input-title').value.trim();
+            const page = document.getElementById('input-page').value.trim();
+            const desc = document.getElementById('input-desc').value.trim();
+            const videoInput = document.getElementById('input-video-file');
+            const pdfInput = document.getElementById('input-pdf-file');
+
+            if (!videoInput.files || !videoInput.files[0]) {
+                showCustomAlert('Falta el Video', 'Por favor adjunta el archivo de video local de la clase.', 'warning');
+                return;
+            }
+
+            if (!pdfInput.files || !pdfInput.files[0]) {
+                showCustomAlert('Falta el PDF', 'Por favor adjunta el archivo PDF con los dos ejercicios de refuerzo.', 'warning');
+                return;
+            }
+
+            const videoFile = videoInput.files[0];
+            const pdfFile = pdfInput.files[0];
+
+            if (pdfFile.type !== 'application/pdf' && !pdfFile.name.toLowerCase().endsWith('.pdf')) {
+                showCustomAlert('Formato inválido', 'El archivo de ejercicios debe ser un documento PDF (.pdf).', 'warning');
+                return;
+            }
+
+            const newLessonRecord = {
+                id: 'lesson-' + Date.now(),
+                createdAt: Date.now(),
+                title: title,
+                level: level,
+                page: page,
+                description: desc,
+                date: new Date().toLocaleDateString('es-ES'),
+                videoBlob: videoFile,
+                videoName: videoFile.name,
+                pdfBlob: pdfFile,
+                pdfName: pdfFile.name,
+                isDemo: false
+            };
+
+            const hydratedLesson = {
+                ...newLessonRecord,
+                videoUrl: URL.createObjectURL(videoFile),
+                pdfUrl: URL.createObjectURL(pdfFile)
+            };
+
+            lessons.unshift(hydratedLesson);
+
+            if (db) {
+                try {
+                    const tx = db.transaction(['lessons'], 'readwrite');
+                    tx.objectStore('lessons').put(newLessonRecord);
+                } catch (err) {
+                    console.warn('Error guardando en IndexedDB:', err);
+                }
+            }
+
+            // Resetear formulario y etiquetas
+            document.getElementById('form-upload-lesson').reset();
+            updateVideoFileLabel(videoInput);
+            updatePdfFileLabel(pdfInput);
+
+            renderTeacherDashboard();
+            showCustomAlert('¡Clase Publicada!', `La clase "${title}" con su video y PDF de refuerzo ya está disponible exclusivamente para ${level}.`, 'success');
+        }
+
+        function filterTeacherLessons(level) {
+            currentFilterTeacher = level;
+            document.getElementById('tab-teacher-all').className = level === 'all'
+                ? 'px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-sm transition'
+                : 'px-4 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition';
+            document.getElementById('tab-teacher-2do').className = level === '2do EGB'
+                ? 'px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition'
+                : 'px-4 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition';
+            document.getElementById('tab-teacher-9no').className = level === '9no EGB'
+                ? 'px-4 py-1.5 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm transition'
+                : 'px-4 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition';
+
+            renderTeacherDashboard();
+        }
+
+        function renderTeacherDashboard() {
+            document.getElementById('teacher-stat-total').innerText = lessons.length;
+            document.getElementById('teacher-stat-2do').innerText = lessons.filter(l => l.level === '2do EGB').length;
+            document.getElementById('teacher-stat-9no').innerText = lessons.filter(l => l.level === '9no EGB').length;
+
+            const filtered = currentFilterTeacher === 'all'
+                ? lessons
+                : lessons.filter(l => l.level === currentFilterTeacher);
+
+            const grid = document.getElementById('teacher-lessons-grid');
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+                        <i data-lucide="folder-open" class="w-10 h-10 text-slate-300 mx-auto mb-3"></i>
+                        <h4 class="font-bold text-slate-700">No hay clases en esta categoría</h4>
+                        <p class="text-xs text-slate-500 mt-1">Usa el formulario superior para adjuntar un video y un PDF de ejercicios.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(lesson => {
+                const is2do = lesson.level === '2do EGB';
+                const badgeClass = is2do ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800';
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition';
+                card.innerHTML = `
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-extrabold px-2.5 py-1 rounded-full ${badgeClass}">${escapeHtml(lesson.level)}</span>
+                            <span class="text-xs text-slate-400 font-medium">${escapeHtml(lesson.date)}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base line-clamp-1">${escapeHtml(lesson.title)}</h4>
+                            <p class="text-xs font-semibold text-blue-600 mt-0.5 flex items-center gap-1">
+                                <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                                <span>Página del libro: ${escapeHtml(lesson.page)}</span>
+                            </p>
+                        </div>
+                        <p class="text-xs text-slate-500 line-clamp-2">${escapeHtml(lesson.description || 'Sin descripción adicional.')}</p>
+
+                        <div class="pt-2 space-y-1.5 border-t border-slate-100 text-xs">
+                            <div class="flex items-center gap-2 text-slate-600 truncate">
+                                <i data-lucide="video" class="w-3.5 h-3.5 text-blue-500 shrink-0"></i>
+                                <span class="truncate">${escapeHtml(lesson.videoName || 'Video adjunto')}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-600 truncate">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-rose-500 shrink-0"></i>
+                                <span class="truncate">${escapeHtml(lesson.pdfName || 'Ejercicios.pdf')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openTeacherPreview('${lesson.id}')" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                            <span>Previsualizar Video y PDF</span>
+                        </button>
+                        <button onclick="confirmDeleteLesson('${lesson.id}')" class="text-xs font-bold text-rose-500 hover:text-rose-700 flex items-center gap-1 transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <span>Eliminar</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function openTeacherPreview(lessonId) {
+            const lesson = lessons.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            document.getElementById('preview-level-badge').innerText = lesson.level;
+            document.getElementById('preview-title').innerText = lesson.title;
+            document.getElementById('preview-page').innerText = `Página del libro: ${lesson.page} • ${lesson.date}`;
+            document.getElementById('preview-desc').innerText = lesson.description || 'Sin instrucciones adicionales.';
+
+            const videoPlayer = document.getElementById('preview-video-player');
+            videoPlayer.src = lesson.videoUrl || '';
+
+            const pdfFrame = document.getElementById('preview-pdf-frame');
+            const pdfNewTab = document.getElementById('preview-pdf-newtab');
+            pdfFrame.src = lesson.pdfUrl || '';
+            pdfNewTab.href = lesson.pdfUrl || '#';
+
+            document.getElementById('modal-teacher-preview').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeTeacherPreview() {
+            const videoPlayer = document.getElementById('preview-video-player');
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            document.getElementById('preview-pdf-frame').removeAttribute('src');
+            document.getElementById('modal-teacher-preview').classList.add('hidden');
+        }
+
+        function confirmDeleteLesson(lessonId) {
+            const lesson = lessons.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            const modal = document.getElementById('custom-alert');
+            const alertTitle = document.getElementById('alert-title');
+            const alertMsg = document.getElementById('alert-message');
+            const iconContainer = document.getElementById('alert-icon-container');
+            const actions = document.getElementById('alert-actions');
+
+            iconContainer.className = 'w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4';
+            iconContainer.innerHTML = `<i data-lucide="trash-2" class="w-6 h-6"></i>`;
+            alertTitle.innerText = '¿Eliminar esta clase?';
+            alertMsg.innerText = `Se eliminará "${lesson.title}" junto con su video y PDF adjunto.`;
+
+            actions.innerHTML = `
+                <button onclick="closeCustomAlert()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-xl transition">
+                    Cancelar
+                </button>
+                <button onclick="executeDeleteLesson('${lessonId}')" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-xl transition">
+                    Sí, eliminar
+                </button>
+            `;
+
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function executeDeleteLesson(lessonId) {
+            closeCustomAlert();
+            lessons = lessons.filter(l => l.id !== lessonId);
+            if (db) {
+                try {
+                    const tx = db.transaction(['lessons'], 'readwrite');
+                    tx.objectStore('lessons').delete(lessonId);
+                } catch (e) {}
+            }
+            renderTeacherDashboard();
+        }
+
+        // ==================== VISTA ESTUDIANTE (AISLADA POR NIVEL) ====================
+        function renderStudentDashboard() {
+            const is2do = currentUserRole === 'estudiante_2do';
+            const targetLevel = is2do ? '2do EGB' : '9no EGB';
+
+            const banner = document.getElementById('student-header-banner');
+            const badge = document.getElementById('student-level-badge');
+            const title = document.getElementById('student-welcome-title');
+            const subtitle = document.getElementById('student-welcome-subtitle');
+
+            if (is2do) {
+                banner.className = 'p-6 sm:p-8 rounded-3xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4';
+                badge.className = 'inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-600 text-white shadow-sm';
+                badge.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 2do EGB - Primaria`;
+                title.className = 'text-2xl sm:text-3xl font-extrabold text-emerald-950 mt-2';
+                title.innerText = '¡Hola! Bienvenido a tu Aula de 2do EGB';
+                subtitle.className = 'text-sm text-emerald-800 mt-1';
+            } else {
+                banner.className = 'p-6 sm:p-8 rounded-3xl border border-indigo-200 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4';
+                badge.className = 'inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30';
+                badge.innerHTML = `<i data-lucide="layers" class="w-3.5 h-3.5"></i> 9no EGB - Básica Superior`;
+                title.className = 'text-2xl sm:text-3xl font-extrabold text-white mt-2';
+                title.innerText = 'Aula Interactiva de Matemáticas - 9no EGB';
+                subtitle.className = 'text-sm text-slate-300 mt-1';
+            }
+
+            // Aislamiento estricto: filtrar únicamente las lecciones del curso del estudiante
+            const studentLessons = lessons.filter(l => l.level === targetLevel);
+            const listContainer = document.getElementById('student-lessons-list');
+            listContainer.innerHTML = '';
+
+            if (studentLessons.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-300">
+                        <i data-lucide="video-off" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                        <h3 class="text-lg font-bold text-slate-700">Aún no hay clases publicadas para ${targetLevel}</h3>
+                        <p class="text-sm text-slate-500 mt-1">Tu docente subirá pronto los videos y ejercicios de refuerzo.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            studentLessons.forEach((lesson, index) => {
+                const article = document.createElement('article');
+                article.className = 'bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden';
+
+                const demoNotice = lesson.isDemo
+                    ? `<span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-800">Lección de demostración</span>`
+                    : '';
+
+                const videoSectionHtml = lesson.videoUrl
+                    ? `<div class="aspect-video bg-slate-950 rounded-2xl overflow-hidden shadow-inner border border-slate-800">
+                           <video controls preload="metadata" class="w-full h-full object-contain" src="${lesson.videoUrl}">
+                               Tu navegador no soporta la reproducción de video HTML5.
+                           </video>
+                       </div>`
+                    : `<div class="aspect-video bg-slate-900 rounded-2xl flex flex-col items-center justify-center text-slate-300 p-6 text-center">
+                           <i data-lucide="film" class="w-10 h-10 text-blue-400 mb-2"></i>
+                           <p class="text-sm font-semibold">Lección de demostración lista para probar</p>
+                           <p class="text-xs text-slate-400 mt-1">Revisa el documento PDF adjunto a la derecha con los ejercicios.</p>
+                       </div>`;
+
+                const pdfNameSafe = escapeHtml(lesson.pdfName || `Ejercicios_${lesson.level.replace(/\s+/g, '')}.pdf`);
+
+                article.innerHTML = `
+                    <!-- Encabezado de la Tarjeta de Lección -->
+                    <div class="px-6 py-5 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-3 py-1 rounded-lg text-xs font-extrabold bg-blue-600 text-white shadow-sm flex items-center gap-1.5">
+                                    <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                                    <span>Página del libro: ${escapeHtml(lesson.page)}</span>
+                                </span>
+                                <span class="text-xs font-medium text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                                    <span>${escapeHtml(lesson.date)}</span>
+                                </span>
+                                ${demoNotice}
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 pt-1">${index + 1}. ${escapeHtml(lesson.title)}</h3>
+                        </div>
+                    </div>
+
+                    <!-- Cuerpo en 2 Columnas: Video Explicativo + PDF de Refuerzo -->
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- Sección 1: Reproductor de Video -->
+                        <div class="lg:col-span-6 flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-2 text-sm font-bold text-slate-800">
+                                    <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-extrabold">1</span>
+                                    <span>Video Explicativo de la Clase</span>
+                                </div>
+                                ${videoSectionHtml}
+                            </div>
+
+                            <div class="bg-blue-50/70 border border-blue-100 rounded-2xl p-4">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-blue-800 mb-1 flex items-center gap-1.5">
+                                    <i data-lucide="info" class="w-3.5 h-3.5"></i> Instrucciones del Docente
+                                </h4>
+                                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                    ${escapeHtml(lesson.description || 'Observa el video explicativo y luego resuelve los dos ejercicios del documento PDF.')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Módulo de Ejercicios de Refuerzo (PDF) -->
+                        <div class="lg:col-span-6 flex flex-col justify-between space-y-4">
+                            <div class="space-y-3 flex-grow flex flex-col">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2 text-sm font-bold text-slate-800">
+                                        <span class="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center text-xs font-extrabold">2</span>
+                                        <span>Ejercicios de Refuerzo (PDF)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <a href="${lesson.pdfUrl}" target="_blank" rel="noopener" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+                                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                            <span>Abrir PDF en pestaña nueva</span>
+                                        </a>
+                                        <a href="${lesson.pdfUrl}" download="${pdfNameSafe}" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center gap-1.5">
+                                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                            <span>Descargar PDF</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Visor Embebido de PDF -->
+                                <div class="w-full h-80 sm:h-96 bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden shadow-inner flex-grow">
+                                    <iframe src="${lesson.pdfUrl}" class="w-full h-full" title="Ejercicios de Refuerzo PDF - ${escapeHtml(lesson.title)}"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                listContainer.appendChild(article);
+            });
+
+            lucide.createIcons();
+        }
+
+        // ==================== UTILIDADES UI ====================
+        function showCustomAlert(title, message, type = 'info') {
+            const modal = document.getElementById('custom-alert');
+            const alertTitle = document.getElementById('alert-title');
+            const alertMsg = document.getElementById('alert-message');
+            const iconContainer = document.getElementById('alert-icon-container');
+            const actions = document.getElementById('alert-actions');
+
+            alertTitle.innerText = title;
+            alertMsg.innerText = message;
+
+            actions.innerHTML = `
+                <button onclick="closeCustomAlert()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded-xl transition">
+                    Aceptar
+                </button>
+            `;
+
+            if (type === 'success') {
+                iconContainer.className = 'w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4';
+                iconContainer.innerHTML = `<i data-lucide="check-circle-2" class="w-6 h-6"></i>`;
+            } else if (type === 'warning') {
+                iconContainer.className = 'w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-4';
+                iconContainer.innerHTML = `<i data-lucide="alert-triangle" class="w-6 h-6"></i>`;
+            } else {
+                iconContainer.className = 'w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4';
+                iconContainer.innerHTML = `<i data-lucide="info" class="w-6 h-6"></i>`;
+            }
+
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('custom-alert').classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>
